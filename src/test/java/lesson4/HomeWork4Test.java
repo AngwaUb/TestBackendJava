@@ -52,8 +52,47 @@ public class HomeWork4Test extends AbstractTest {
                 .queryParam("query", "pasta")
                 .when()
                 .get(getUrlBase() + "recipes/complexSearch")
+                .then()
+                .extract()
                 .body()
                 .as(Response.class);
         assertThat(response2.getTotalResults(), equalTo(34));
     }
+
+    @Test
+    void addToShoppingList() {
+        Request requestBody = new Request();
+        requestBody.setAisle("Baking");
+        requestBody.setItem("1 package baking powder");
+        requestBody.setParse(true);
+
+        ResponseShoppingListPost responseShoppingList = given().spec(requestSpecification2)
+                .body(requestBody)
+                .post(getUrlBase() + "mealplanner/" + getUsername() + "/shopping-list/items")
+                .then()
+                .spec(responseSpecification)
+                .extract()
+                .body()
+                .as(ResponseShoppingListPost.class);
+        assertThat(responseShoppingList.getCost(), equalTo(0.71));
+
+
+        given().spec(requestSpecification2)
+                .delete("https://api.spoonacular.com/mealplanner/andreburdenko/shopping-list/items/" + responseShoppingList.getId())
+                .then()
+                .spec(responseSpecification);
+    }
+
+    @Test
+    void getShoppingList() {
+        ResponseShoppingListGet responseGet = given().spec(requestSpecification2)
+                .when()
+                .get(getUrlBase() + "mealplanner/" + getUsername() + "/shopping-list")
+                .then()
+                .extract()
+                        .body()
+                .as(ResponseShoppingListGet.class);
+        assertThat(responseGet.getCost(), equalTo(7.1));
+    }
+
 }

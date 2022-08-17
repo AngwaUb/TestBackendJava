@@ -24,6 +24,7 @@ public abstract class AbstractTest {
     private static String username;
     protected static ResponseSpecification responseSpecification;
     protected static RequestSpecification requestSpecification;
+    protected static RequestSpecification requestSpecification2;
 
     @BeforeAll
     static void initTest() throws IOException {
@@ -40,7 +41,7 @@ public abstract class AbstractTest {
                 .expectStatusCode(200)
                 .expectStatusLine("HTTP/1.1 200 OK")
                 .expectContentType(ContentType.JSON)
-                .expectResponseTime(Matchers.lessThan(3000L))
+                .expectResponseTime(Matchers.lessThan(5000L))
                 .build();
 
         requestSpecification = new RequestSpecBuilder()
@@ -49,8 +50,17 @@ public abstract class AbstractTest {
                 .log(LogDetail.ALL)
                 .build();
 
-        RestAssured.responseSpecification = responseSpecification;
-        RestAssured.requestSpecification = requestSpecification;
+        requestSpecification2 = new RequestSpecBuilder()
+                .addQueryParam("apiKey", apiKey)
+                .addQueryParam("username", username)
+                .addQueryParam("hash", hash)
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
+
+       // RestAssured.responseSpecification = responseSpecification;
+       // RestAssured.requestSpecification = requestSpecification;
+       // RestAssured.requestSpecification = requestSpecification2;
     }
 
     public static String getApiKey() {
@@ -71,5 +81,9 @@ public abstract class AbstractTest {
 
     public RequestSpecification getRequestSpecification() {
         return requestSpecification;
+    }
+
+    public RequestSpecification getRequestSpecification2() {
+        return requestSpecification2;
     }
 }
