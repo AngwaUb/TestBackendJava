@@ -90,7 +90,7 @@ public class HomeWork4Test extends AbstractTest {
                 .get(getUrlBase() + "mealplanner/" + getUsername() + "/shopping-list")
                 .then()
                 .extract()
-                        .body()
+                .body()
                 .as(ResponseShoppingListGet.class);
         assertThat(responseGet.getCost(), equalTo(7.1));
     }
